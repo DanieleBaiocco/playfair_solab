@@ -4,9 +4,9 @@
 #include "playfair.h"
 #include <stdio.h>
 #include <string.h>
-#include <sys/types.h>
 #include <stdlib.h>
 #include <stdbool.h>
+
 alph* createAlphabet (char * bufferforalph);
 void createmapi(map** mappa, int i, char cj, int j);
 alph* getAlph(map** alphmap, int dim, char* stringalph);
@@ -60,8 +60,10 @@ kfcontainer* create_container (char* keyfile){
         cell** keyStr = malloc(sizeof(cell*)*bufflen);
         addblock(bufferforkey,bufflen, keyStr, &first, &last);
     }
+
     fclose(kfile);
     key* totalkey = createkey(first);
+    printf("%c",totalkey->block->next->keyString[6]->keycharacter);
    kfcontainer* kfcontainertoReturn = malloc(sizeof(kfcontainer));
    kfcontainertoReturn->alphabet = alphab;
    kfcontainertoReturn->missing_character = missingchar;

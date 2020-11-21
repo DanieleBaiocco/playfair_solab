@@ -5,7 +5,8 @@
 #ifndef UNTITLED10_PLAYFAIR_H
 #define UNTITLED10_PLAYFAIR_H
 
-#include <rpcndr.h>
+
+#include <stdbool.h>
 
 typedef struct Map {
     char character;
@@ -22,7 +23,7 @@ typedef struct PlayFairGrid grid;
 
 typedef struct Cell {
     char keycharacter;
-    boolean state;
+    bool state;
 } cell;
 
 typedef struct vblock {
