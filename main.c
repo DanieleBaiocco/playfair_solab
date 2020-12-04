@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     gli altri caratteri uguali all'interno della keystring e un altro metodo che preso un carattere me lo va
     a rimuovere dall'alfabeto. Questo carattere è lo stesso per entrambi i metodi e corrisponde a un carattere
     che viene inserito con successo nella griglia.*/
-    //grid* grid = create_grid(key,alph);
+    grid* grid = create_grid(key,alph);
     /*
     for(int i =4; i<argc; i++) {
         char** fileIInPlayFairFormat = changeifileformat(argv[i], missing_char, special_char);

@@ -13,13 +13,20 @@ typedef struct Map {
     int integer;
 }map;
 
+/*
+ * devo rivedere l'alphabet perchè la map va levata primo, secondo se l'alphabet è solo un'insieme
+ * di celle allora non so se va messo o meno come struct
+ */
 typedef struct Alphabet {
     char* stringaAlph;
     map** mappacharpos;
-    int dimensione;
 } alph;
 
-typedef struct PlayFairGrid grid;
+typedef struct PlayFairGrid {
+    char** matrix;
+    int rowLastInteger;
+    int columnLastInteger;
+} grid;
 
 typedef struct Cell {
     char keycharacter;
@@ -35,6 +42,7 @@ typedef struct vblock {
 typedef struct KeyUsed {
     int index;
     vblock_t *block;
+    int numberOfBlocks;
 } key;
 
 typedef struct Container {
@@ -47,8 +55,8 @@ typedef struct Container {
 char** changeifileformat (char* filei, char* missing_character, char* special_character);
 grid* create_grid (key* key, alph* alph);
 kfcontainer* create_container (char* keyfile);
-key* load_key(char* key_from_keyfile);
-alph* load_alph (char* alph_from_keyfile);
+key* createkey(vblock_t *first, int numberofblocks);
+alph* createAlphabet (char* alph_from_keyfile);
 void encode_file(char* directory, char** input);
 
 #endif //UNTITLED10_PLAYFAIR_H
