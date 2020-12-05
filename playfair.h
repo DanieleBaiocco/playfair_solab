@@ -8,20 +8,10 @@
 
 #include <stdbool.h>
 
-typedef struct Map {
-    char character;
-    int integer;
-}map;
-
 /*
  * devo rivedere l'alphabet perchè la map va levata primo, secondo se l'alphabet è solo un'insieme
  * di celle allora non so se va messo o meno come struct
  */
-typedef struct Alphabet {
-    char* stringaAlph;
-    map** mappacharpos;
-} alph;
-
 typedef struct PlayFairGrid {
     char** matrix;
     int rowLastInteger;
@@ -46,17 +36,17 @@ typedef struct KeyUsed {
 } key;
 
 typedef struct Container {
-    alph* alphabet;
+    cell** alphabet;
     char missing_character;
     char special_character;
     key* key;
 } kfcontainer;
 
 char** changeifileformat (char* filei, char* missing_character, char* special_character);
-grid* create_grid (key* key, alph* alph);
+grid* create_grid (key* key, cell** alph);
 kfcontainer* create_container (char* keyfile);
 key* createkey(vblock_t *first, int numberofblocks);
-alph* createAlphabet (char* alph_from_keyfile);
+cell** createAlphabet (char* alph_from_keyfile);
 void encode_file(char* directory, char** input);
 
 #endif //UNTITLED10_PLAYFAIR_H

@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
     }
     kfcontainer* keyfile_parsed = create_container(argv[2]);
    key* key = keyfile_parsed->key;
-    alph* alph = keyfile_parsed->alphabet;
+    cell** alph = keyfile_parsed->alphabet;
     char missing_char = keyfile_parsed->missing_character;
     char special_char = keyfile_parsed->special_character;
     /*all'interno della creazione della griglia avrò un metodo che dato un carattere mi va a invalidare tutti
