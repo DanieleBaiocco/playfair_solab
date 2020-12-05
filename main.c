@@ -19,11 +19,13 @@ int main(int argc, char** argv) {
     cell** alph = keyfile_parsed->alphabet;
     misschar* missing_char = keyfile_parsed->missing_character;
     char special_char = keyfile_parsed->special_character;
-
-    grid* grid = create_grid(key,alph);
-    for(int i =4; i<argc; i++) {
-   /*     char** fileIInPlayFairFormat = changeifileformat(argv[i], missing_char, special_char);
-      if (strcmp(argv[1], "encode") == 0) {
+    /*printf("%c",special_char);
+    printf("%c",missing_char->replace_character);
+    printf("%c",missing_char->missing_character);
+    grid* grid = create_grid(key,alph);*/
+    //for(int i =3; i<argc; i++) {
+       char* fileIInPlayFairFormat = changeifileformat(argv[3], missing_char, special_char);
+   /*   if (strcmp(argv[1], "encode") == 0) {
             char fileNamePrefix[] = "/filecodificato";
             //gestisco massimo 99 files
             //6 = 2 per gestire due caratteri numerici , 3 per il .py e 1 per il \0
@@ -41,7 +43,7 @@ int main(int argc, char** argv) {
             free(charOfAnInt);
             free(argv3Copy);
         }*/
-    }
+   //}
 }
 
 

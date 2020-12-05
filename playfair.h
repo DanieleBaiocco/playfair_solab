@@ -47,7 +47,7 @@ typedef struct Container {
     key* key;
 } kfcontainer;
 
-char** changeifileformat (char* filei, misschar* missing_character, char special_character);
+char* changeifileformat (char* filei, misschar* missing_character, char special_character);
 grid* create_grid (key* key, cell** alph);
 kfcontainer* create_container (char* keyfile);
 key* createkey(vblock_t *first, int numberofblocks);

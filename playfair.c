@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+void remove_spaces(char* s);
 void shift(grid* grid);
 cell** createAlphabet (char* bufferforalph);
 void addblock(char* buffer, int bufferlength, cell** keyString, vblock_t ** pfirst, vblock_t ** last);
@@ -17,6 +18,9 @@ void changeToFalse(char c, int index, vblock_t* currentBlock);
 void makeNextNullandRemoveEndChars(vblock_t* last);
 void finishToInitGrid(grid* grid, cell** alphabet);
 void updateStateIntoAlphabet(cell** alphabet, char c);
+void replacechar(char *s,char c1,char c2);
+char* changeifileformat(char* filei, misschar* missing, char special_character);
+
 
         grid* create_grid (key* key, cell** alph){
     //init matrice
@@ -209,13 +213,41 @@ void createCell(cell **pCell, char c, int i) {
  * missing_character. Inoltre per ogni coppia devo controllare se i due caratteri sono uguali. In caso
  * affermativo rimpiazzo il primo/secondo carattere col carattere special_character.
  */
-char** changeifileformat(char* filei, misschar* missing_character, char special_character){
-    FILE* fin = fopen( filei , "r" );
+char* changeifileformat(char* filei, misschar* missing, char special_character){
+    FILE* fin = fopen(filei,"r");
+    FILE* t = fopen("/home/daniele/Scrivania/prova.txt","w");
     char buffer[256];
     while ( fgets(buffer,256,fin)  != NULL ) {
+        remove_spaces(buffer);
+        printf("%s",buffer);
+        replacechar(buffer,missing->missing_character,missing->replace_character);
+        for(int i=0; i<strlen(buffer); i=i+2){
+            char c1 = buffer[i];
+            char c2 = buffer[i+1];
 
+            fputc(c1,t);
+            fputc(c2,t);
+            fputc(' ',t);
+        }
     }
-
+    fclose(t);
     fclose(fin);
-return NULL;
+return "sesso";
+}
+
+void remove_spaces(char* s) {
+    const char* d = s;
+    do {
+        while (*d == ' ') {
+            ++d;
+        }
+    } while ((*s++ = *d++));
+}
+
+void replacechar(char *s,char c1,char c2){
+    for(int i=0;s[i];i++){
+        if(s[i]==c1){
+            s[i]=c2;
+        }
+    }
 }
