@@ -18,6 +18,11 @@ typedef struct PlayFairGrid {
     int columnLastInteger;
 } grid;
 
+typedef struct MissingCharacter{
+    char missing_character;
+    char replace_character;
+} misschar;
+
 typedef struct Cell {
     char keycharacter;
     bool state;
@@ -37,16 +42,17 @@ typedef struct KeyUsed {
 
 typedef struct Container {
     cell** alphabet;
-    char missing_character;
+    misschar* missing_character;
     char special_character;
     key* key;
 } kfcontainer;
 
-char** changeifileformat (char* filei, char* missing_character, char* special_character);
+char** changeifileformat (char* filei, misschar* missing_character, char special_character);
 grid* create_grid (key* key, cell** alph);
 kfcontainer* create_container (char* keyfile);
 key* createkey(vblock_t *first, int numberofblocks);
 cell** createAlphabet (char* alph_from_keyfile);
+misschar* createMissingCharacter (char* string, char replacetothemissing);
 void encode_file(char* directory, char** input);
 
 #endif //UNTITLED10_PLAYFAIR_H

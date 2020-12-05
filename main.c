@@ -15,19 +15,15 @@ int main(int argc, char** argv) {
         return -1;
     }
     kfcontainer* keyfile_parsed = create_container(argv[2]);
-   key* key = keyfile_parsed->key;
+  key* key = keyfile_parsed->key;
     cell** alph = keyfile_parsed->alphabet;
-    char missing_char = keyfile_parsed->missing_character;
+    misschar* missing_char = keyfile_parsed->missing_character;
     char special_char = keyfile_parsed->special_character;
-    /*all'interno della creazione della griglia avrò un metodo che dato un carattere mi va a invalidare tutti
-    gli altri caratteri uguali all'interno della keystring e un altro metodo che preso un carattere me lo va
-    a rimuovere dall'alfabeto. Questo carattere è lo stesso per entrambi i metodi e corrisponde a un carattere
-    che viene inserito con successo nella griglia.*/
+
     grid* grid = create_grid(key,alph);
-    /*
     for(int i =4; i<argc; i++) {
-        char** fileIInPlayFairFormat = changeifileformat(argv[i], missing_char, special_char);
-        if (strcmp(argv[1], "encode") == 0) {
+   /*     char** fileIInPlayFairFormat = changeifileformat(argv[i], missing_char, special_char);
+      if (strcmp(argv[1], "encode") == 0) {
             char fileNamePrefix[] = "/filecodificato";
             //gestisco massimo 99 files
             //6 = 2 per gestire due caratteri numerici , 3 per il .py e 1 per il \0
@@ -44,10 +40,10 @@ int main(int argc, char** argv) {
             free(fileName);
             free(charOfAnInt);
             free(argv3Copy);
-        }
-    }*/
-
+        }*/
+    }
 }
+
 
 
 

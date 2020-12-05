@@ -18,7 +18,7 @@ void makeNextNullandRemoveEndChars(vblock_t* last);
 void finishToInitGrid(grid* grid, cell** alphabet);
 void updateStateIntoAlphabet(cell** alphabet, char c);
 
-grid* create_grid (key* key, cell** alph){
+        grid* create_grid (key* key, cell** alph){
     //init matrice
     char **mat = malloc(5 * sizeof(char *));
     for(int i = 0; i < 5; i++)
@@ -53,6 +53,7 @@ grid* create_grid (key* key, cell** alph){
         }
     }
 }
+
 void finishToInitGrid(grid* grid, cell** alphabet){
     for(int i=0; i<25; i++){
         if(alphabet[i]->state == true){
@@ -61,6 +62,7 @@ void finishToInitGrid(grid* grid, cell** alphabet){
         }
     }
 }
+
 void updateStateIntoAlphabet(cell** alphabet, char c){
     for(int i=0; i<25;i++){
         if(alphabet[i]->keycharacter == c && alphabet[i]->state == true){
@@ -118,7 +120,11 @@ kfcontainer* create_container (char* keyfile){
    cell** alphab = createAlphabet (bufferforalph);
    char bufferformissingcharacter[7];
    fgets(bufferformissingcharacter,7,kfile);
-  char missingchar = bufferformissingcharacter[0];
+   char bff[25];
+    for(int i =0; i<25; i++){
+        strncat(bff, &alphab[i]->keycharacter, 1);
+    }
+  misschar* missingchar = createMissingCharacter(bff, bufferformissingcharacter[0]);
     char bufferforspecialcharacter[7];
     fgets(bufferforspecialcharacter,7,kfile);
     char specialchar = bufferforspecialcharacter[0];
@@ -142,6 +148,20 @@ kfcontainer* create_container (char* keyfile){
    kfcontainertoReturn->special_character = specialchar;
    kfcontainertoReturn->key= totalkey;
    return kfcontainertoReturn;
+
+}
+
+misschar* createMissingCharacter (char* string, char replacetothemissing){
+    misschar* toReturn = malloc(sizeof (misschar));
+    char missingcharacter;
+    for(int i=0; i<26; i++){
+        char cc = i+65;
+            if(strchr(string, cc)==NULL)
+                missingcharacter= cc;
+    }
+    toReturn->missing_character = missingcharacter;
+    toReturn->replace_character = replacetothemissing;
+    return toReturn;
 }
 
 key* createkey(vblock_t *first, int numberofblocks) {
@@ -182,8 +202,14 @@ void createCell(cell **pCell, char c, int i) {
     pCell[i]->state = true;
 }
 
-
-char** changeifileformat(char* filei, char* missing_character, char* special_character){
+/*
+ * Metodo che restituisce il contenuto dell'i-esimo file in formato playfair: le lettere della stringa
+ * vengono raggruppate a due a due e vengono levati gli spazi. Inoltre per ogni lettera si controlla se
+ * è uguale al carattere mancante. In caso affermativo sostituisco il carattere mancante col carattere
+ * missing_character. Inoltre per ogni coppia devo controllare se i due caratteri sono uguali. In caso
+ * affermativo rimpiazzo il primo/secondo carattere col carattere special_character.
+ */
+char** changeifileformat(char* filei, misschar* missing_character, char special_character){
     FILE* fin = fopen( filei , "r" );
     char buffer[256];
     while ( fgets(buffer,256,fin)  != NULL ) {
