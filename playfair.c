@@ -19,7 +19,7 @@ void makeNextNullandRemoveEndChars(vblock_t* last);
 void finishToInitGrid(grid* grid, cell** alphabet);
 void updateStateIntoAlphabet(cell** alphabet, char c);
 void replacechar(char *s,char c1,char c2);
-char* changeifileformat(char* filei, misschar* missing, char special_character);
+FILE* changeifileformat(char* filei, misschar* missing, char special_character);
 
 
         grid* create_grid (key* key, cell** alph){
@@ -213,27 +213,52 @@ void createCell(cell **pCell, char c, int i) {
  * missing_character. Inoltre per ogni coppia devo controllare se i due caratteri sono uguali. In caso
  * affermativo rimpiazzo il primo/secondo carattere col carattere special_character.
  */
-char* changeifileformat(char* filei, misschar* missing, char special_character){
+FILE * changeifileformat(char* filei, misschar* missing, char special_character){
     FILE* fin = fopen(filei,"r");
-    FILE* t = fopen("/home/daniele/Scrivania/prova.txt","w");
+    FILE* tmp = tmpfile();
     char buffer[256];
     while ( fgets(buffer,256,fin)  != NULL ) {
         remove_spaces(buffer);
-        printf("%s",buffer);
         replacechar(buffer,missing->missing_character,missing->replace_character);
-        for(int i=0; i<strlen(buffer); i=i+2){
+
+        printf("%lu\n",strlen(buffer));
+
+        if(strlen(buffer)%2==0){
+        for(int i=0; i<strlen(buffer)-2;i=i+2){
             char c1 = buffer[i];
             char c2 = buffer[i+1];
-
-            fputc(c1,t);
-            fputc(c2,t);
-            fputc(' ',t);
+            if(c1==c2){
+                c2= special_character;
+            }
+            fputc(c1,tmp);
+            fputc(c2,tmp);
+            fputc(' ',tmp);
+            }
+            buffer[strlen(buffer)-1]=special_character;
+            printf("%c",buffer[strlen(buffer)-1] );
+            fputc(buffer[strlen(buffer)-2],tmp);
+            fputc(buffer[strlen(buffer)-1],tmp);
+            fputc(' ',tmp);
         }
+        else{
+                for(int i=0; i<strlen(buffer)-1; i=i+2){
+                    char c1 = buffer[i];
+                    char c2 = buffer[i+1];
+                    if(c1==c2){
+                        c2= special_character;
+                    }
+                    fputc(c1,tmp);
+                    fputc(c2,tmp);
+                    fputc(' ',tmp);
+                }
+            }
+        }//endwhile
+        fclose(fin);
+    rewind(tmp);
+    return tmp;
     }
-    fclose(t);
-    fclose(fin);
-return "sesso";
-}
+
+
 
 void remove_spaces(char* s) {
     const char* d = s;

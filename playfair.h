@@ -5,7 +5,7 @@
 #ifndef UNTITLED10_PLAYFAIR_H
 #define UNTITLED10_PLAYFAIR_H
 
-
+#include <stdio.h>
 #include <stdbool.h>
 
 /*
@@ -47,7 +47,7 @@ typedef struct Container {
     key* key;
 } kfcontainer;
 
-char* changeifileformat (char* filei, misschar* missing_character, char special_character);
+FILE* changeifileformat (char* filei, misschar* missing_character, char special_character);
 grid* create_grid (key* key, cell** alph);
 kfcontainer* create_container (char* keyfile);
 key* createkey(vblock_t *first, int numberofblocks);

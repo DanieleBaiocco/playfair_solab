@@ -23,8 +23,8 @@ int main(int argc, char** argv) {
     printf("%c",missing_char->replace_character);
     printf("%c",missing_char->missing_character);
     grid* grid = create_grid(key,alph);*/
-    //for(int i =3; i<argc; i++) {
-       char* fileIInPlayFairFormat = changeifileformat(argv[3], missing_char, special_char);
+   // for(int i =3; i<argc; i++) {
+       FILE* tmploaded= changeifileformat(argv[3], missing_char, special_char);
    /*   if (strcmp(argv[1], "encode") == 0) {
             char fileNamePrefix[] = "/filecodificato";
             //gestisco massimo 99 files
