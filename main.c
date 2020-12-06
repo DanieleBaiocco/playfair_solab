@@ -19,10 +19,7 @@ int main(int argc, char** argv) {
     cell** alph = keyfile_parsed->alphabet;
     misschar* missing_char = keyfile_parsed->missing_character;
     char special_char = keyfile_parsed->special_character;
-    /*printf("%c",special_char);
-    printf("%c",missing_char->replace_character);
-    printf("%c",missing_char->missing_character);
-    grid* grid = create_grid(key,alph);*/
+    grid* grid = create_grid(key,alph, missing_char);
    // for(int i =3; i<argc; i++) {
        FILE* tmploaded= changeifileformat(argv[3], missing_char, special_char);
    /*   if (strcmp(argv[1], "encode") == 0) {

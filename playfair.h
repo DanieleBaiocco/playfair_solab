@@ -8,15 +8,19 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-/*
- * devo rivedere l'alphabet perchè la map va levata primo, secondo se l'alphabet è solo un'insieme
- * di celle allora non so se va messo o meno come struct
- */
+typedef struct Map{
+    char character;
+    int row;
+    int collumn;
+} map;
+
 typedef struct PlayFairGrid {
     char** matrix;
     int rowLastInteger;
     int columnLastInteger;
+    map** map;
 } grid;
+
 
 typedef struct MissingCharacter{
     char missing_character;
@@ -48,7 +52,7 @@ typedef struct Container {
 } kfcontainer;
 
 FILE* changeifileformat (char* filei, misschar* missing_character, char special_character);
-grid* create_grid (key* key, cell** alph);
+grid* create_grid (key* key, cell** alph, misschar* missing);
 kfcontainer* create_container (char* keyfile);
 key* createkey(vblock_t *first, int numberofblocks);
 cell** createAlphabet (char* alph_from_keyfile);
