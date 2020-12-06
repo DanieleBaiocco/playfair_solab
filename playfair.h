@@ -52,11 +52,8 @@ typedef struct Container {
 } kfcontainer;
 
 FILE* changeifileformat (char* filei, misschar* missing_character, char special_character);
-grid* create_grid (key* key, cell** alph, misschar* missing);
+grid* create_grid (key* key, cell** alph);
 kfcontainer* create_container (char* keyfile);
-key* createkey(vblock_t *first, int numberofblocks);
-cell** createAlphabet (char* alph_from_keyfile);
-misschar* createMissingCharacter (char* string, char replacetothemissing);
-void encode_file(char* directory, char** input);
+void encode_file(FILE * input, grid* grid, char* directory);
 
 #endif //UNTITLED10_PLAYFAIR_H

@@ -7,14 +7,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-void createMap(char** matrice, map** map, misschar* missing);
+misschar* createMissingCharacter (char* string, char replacetothemissing);
+void createMap(char** matrice, map** map);
 void remove_spaces(char* s);
 void shift(grid* grid);
-cell** createAlphabet (char* bufferforalph);
 void addblock(char* buffer, int bufferlength, cell** keyString, vblock_t ** pfirst, vblock_t ** last);
 void createCell(cell** pCell, char c, int i);
 key *createkey(vblock_t *first, int numberofblocks);
-grid* create_grid (key* key, cell** alph, misschar* missing);
 void changeToFalse(char c, int index, vblock_t* currentBlock);
 void makeNextNullandRemoveEndChars(vblock_t* last);
 void finishToInitGrid(grid* grid, cell** alphabet);
@@ -22,7 +21,12 @@ void updateStateIntoAlphabet(cell** alphabet, char c);
 void replacechar(char *s,char c1,char c2);
 FILE* changeifileformat(char* filei, misschar* missing, char special_character);
 
-grid* create_grid (key* key, cell** alph, misschar* missing){
+
+void encode_file(FILE * input, grid* grid, char* directory){
+
+}
+
+grid* create_grid (key* key, cell** alph){
     //init matrice
     char **mat = malloc(5 * sizeof(char *));
     for(int i = 0; i < 5; i++)
@@ -58,17 +62,11 @@ grid* create_grid (key* key, cell** alph, misschar* missing){
         }
     }
     printf("\n");
-    createMap(newGrid->matrix, newGrid->map, missing);
-    for (int i=0; i<26;i++){
-        if(i+65==missing->missing_character)
-            i=i+1;
-        printf("%c ", newGrid->map[i]->character);
-        printf("%i ", newGrid->map[i]->row);
-        printf("%i\n", newGrid->map[i]->collumn);
-    }
+    createMap(newGrid->matrix, newGrid->map);
+
 }
 
-void createMap(char** matrice, map** mapOfGrid, misschar* missing){
+void createMap(char** matrice, map** mapOfGrid){
     for(int i=0; i<26; i++){
         for(int j=0; j<5; j++){
             for(int k=0; k<5; k++){
