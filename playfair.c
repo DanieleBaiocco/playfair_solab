@@ -23,7 +23,36 @@ FILE* changeifileformat(char* filei, misschar* missing, char special_character);
 
 
 void encode_file(FILE * input, grid* grid, char* directory){
+    FILE* outputFile = fopen(directory, "w");
+    char buffer[256];
+    while(fgets(buffer, 256, input) != NULL){
+       for(int i=0; i<strlen(buffer); i=i+3){
+           char a = buffer[i];
+            char b = buffer[i+1];
+          int arow = grid->map[a-65]->row;
+           int acolumn = grid ->map[a-65]->collumn;
+            int brow = grid->map[b-65]->row;
+            int bcolumn = grid->map[b-65]->collumn;
+            char atorespond =' ';
+            char btorespond = ' ';
+             if(arow == brow){
+                  atorespond = grid->matrix[arow][++acolumn%5];
+                  btorespond = grid->matrix[brow][++bcolumn%5];
 
+            }else if(acolumn == bcolumn){
+                 atorespond = grid->matrix[++arow%5][acolumn];
+                 btorespond = grid->matrix[++brow%5][bcolumn];
+            }else {
+                 atorespond = grid->matrix[arow][bcolumn];
+                 btorespond = grid->matrix[brow][acolumn];
+             }
+             putc(atorespond,outputFile);
+             putc(btorespond,outputFile);
+             putc(' ',outputFile);
+    }
+
+    }
+    fclose(outputFile);
 }
 
 grid* create_grid (key* key, cell** alph){
@@ -36,7 +65,6 @@ grid* create_grid (key* key, cell** alph){
     newGrid->rowLastInteger=0;
     newGrid->columnLastInteger=0;
     newGrid->matrix = mat;
-    newGrid->map = mapOfNewGrid;
     while (key->block !=NULL && (newGrid->columnLastInteger!=4 || newGrid->rowLastInteger!=5)){
         for(key->index; key->index< key->block->size; key->index++){
             if(key->block->keyString[key->index]->state == true && key->block->keyString[key->index]->keycharacter!= ' '){
@@ -62,7 +90,9 @@ grid* create_grid (key* key, cell** alph){
         }
     }
     printf("\n");
-    createMap(newGrid->matrix, newGrid->map);
+    createMap(newGrid->matrix,mapOfNewGrid);
+    newGrid->map= mapOfNewGrid;
+    return newGrid;
 
 }
 
@@ -244,7 +274,6 @@ FILE * changeifileformat(char* filei, misschar* missing, char special_character)
     while ( fgets(buffer,256,fin)  != NULL ) {
         remove_spaces(buffer);
         replacechar(buffer,missing->missing_character,missing->replace_character);
-
         if(strlen(buffer)%2==0){
         for(int i=0; i<strlen(buffer)-2;i=i+2){
             char c1 = buffer[i];
@@ -274,8 +303,10 @@ FILE * changeifileformat(char* filei, misschar* missing, char special_character)
                 }
             }
         }//endwhile
-        fclose(fin);
+         fclose(fin);
     rewind(tmp);
+    char bufferr[256];
+
     return tmp;
     }
 

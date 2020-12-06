@@ -29,14 +29,14 @@ int main(int argc, char** argv) {
     misschar* missing_char = keyfile_parsed->missing_character;
     char special_char = keyfile_parsed->special_character;
     grid* grid = create_grid(key,alph);
-   // for(int i =4; i<argc; i++) {
-       FILE* tmploaded= changeifileformat(argv[4], missing_char, special_char);
+    for(int i =4; i<argc; i++) {
+       FILE* tmploaded= changeifileformat(argv[i], missing_char, special_char);
       if (strcmp(argv[1], "encode") == 0) {
             char fileNamePrefix[] = "/filecodificato";
             //gestisco massimo 99 files
             //6 = 2 per gestire due caratteri numerici , 3 per il .py e 1 per il \0
             char *charOfAnInt = malloc(6);
-            sprintf(charOfAnInt,"%i",1);
+            sprintf(charOfAnInt,"%i",i-3);
             strcat(charOfAnInt, ".py");
             char *fileName = malloc(sizeof(char) * ((strlen(fileNamePrefix) + strlen(charOfAnInt))));
             strcpy(fileName, fileNamePrefix);
@@ -45,12 +45,11 @@ int main(int argc, char** argv) {
             strcpy(argv3Copy, argv[3]);
             strcat(argv3Copy, fileName);
             encode_file(tmploaded, grid, argv3Copy);
-          /*
             free(fileName);
             free(charOfAnInt);
-            free(argv3Copy);*/
+            free(argv3Copy);
         }
-   //}
+   }
 }
 
 
