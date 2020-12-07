@@ -19,9 +19,75 @@ void makeNextNullandRemoveEndChars(vblock_t* last);
 void finishToInitGrid(grid* grid, cell** alphabet);
 void updateStateIntoAlphabet(cell** alphabet, char c);
 void replacechar(char *s,char c1,char c2);
-FILE* changeifileformat(char* filei, misschar* missing, char special_character);
+FILE* toEncodedFormat(char* filei, misschar* missing_character, char special_character);
+int check(char *s,char c);
 
+FILE* decode_file(grid* grid, char* fileToDecode){
+    FILE* input = fopen(fileToDecode,"r");
+    FILE* tmp = tmpfile();
+    char buffer[256];
+    while(fgets(buffer, 256, input) != NULL){
+        for(int i=0; i<strlen(buffer); i=i+3){
+        char a = buffer[i];
+        char b = buffer[i+1];
+        int arow = grid->map[a-65]->row;
+        int acolumn = grid ->map[a-65]->collumn;
+        int brow = grid->map[b-65]->row;
+        int bcolumn = grid->map[b-65]->collumn;
+        char atorespond =' ';
+        char btorespond = ' ';
+        if(arow == brow){
+            if((acolumn-1) == -1 ){
+                atorespond = grid->matrix[arow][4];
+                btorespond = grid->matrix[brow][--bcolumn];
+            }
+            else if ((bcolumn-1) == -1){
+                atorespond = grid->matrix[arow][--acolumn];
+                btorespond = grid->matrix[brow][4];
+            }
+            else{
+                atorespond = grid->matrix[arow][--acolumn];
+                btorespond = grid->matrix[brow][--bcolumn];
+            }
+        }else if(acolumn == bcolumn){
+            if((arow-1)== -1 ){
+                atorespond = grid->matrix[4][acolumn];
+                btorespond = grid->matrix[--brow][bcolumn];
+            }
+            else if ((brow-1) == -1){
+                atorespond = grid->matrix[--arow][acolumn];
+                btorespond = grid->matrix[4][bcolumn];
+            }
+            else{
+                atorespond = grid->matrix[--arow][acolumn];
+                btorespond = grid->matrix[--brow][bcolumn];
+            }
+        }else {
+            atorespond = grid->matrix[arow][bcolumn];
+            btorespond = grid->matrix[brow][acolumn];
+        }
+        putc(atorespond,tmp);
+        putc(btorespond,tmp);
+        putc(' ',tmp);
+        }
+    }
+    rewind(tmp);
+    return tmp;
+}
 
+void toDecodedFormat(FILE* tmpFile, char* pathname, misschar* missing_char, char special_char){
+
+}
+
+int check(char *s,char c){
+    int i,count=0;
+    for(i=0;s[i];i++){
+        if(s[i]==c){
+            count++;
+        }
+    }
+    return count;
+}
 void encode_file(FILE * input, grid* grid, char* directory){
     FILE* outputFile = fopen(directory, "w");
     char buffer[256];
@@ -267,13 +333,13 @@ void createCell(cell **pCell, char c, int i) {
  * missing_character. Inoltre per ogni coppia devo controllare se i due caratteri sono uguali. In caso
  * affermativo rimpiazzo il primo/secondo carattere col carattere special_character.
  */
-FILE * changeifileformat(char* filei, misschar* missing, char special_character){
+FILE * toEncodedFormat(char* filei, misschar* missing_character, char special_character){
     FILE* fin = fopen(filei,"r");
     FILE* tmp = tmpfile();
     char buffer[256];
     while ( fgets(buffer,256,fin)  != NULL ) {
         remove_spaces(buffer);
-        replacechar(buffer,missing->missing_character,missing->replace_character);
+        replacechar(buffer, missing_character->missing_character, missing_character->replace_character);
         if(strlen(buffer)%2==0){
         for(int i=0; i<strlen(buffer)-2;i=i+2){
             char c1 = buffer[i];

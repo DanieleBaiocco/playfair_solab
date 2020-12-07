@@ -7,6 +7,33 @@
 #include <fcntl.h>
 #include <unistd.h>
 void printInfo();
+int check(char *s,char c);
+char* getFileName (char* argvI);
+void createPathName(char* directory, char* firstpart, char* extension, char* pathname);
+
+void createPathName(char* directory, char* firstpart, char* extension, char* pathname){
+    char firstpartplusext[strlen(firstpart)+strlen(extension)];
+    strcpy(firstpartplusext, firstpart);
+    strcat(firstpartplusext, extension);
+    strcpy(pathname, directory);
+    strcat(pathname, "/");
+    strcat(pathname, firstpartplusext);
+}
+
+char* getFileName (char* argvI){
+    int count = check(argvI,'/');
+    char* token = strtok(argvI,"/");
+    for(int i=0; i<count-1; i++){
+        token = strtok(NULL, " ");
+        token = strtok(token,"/");
+    }
+    for(int i=0; i<strlen(token);i++){
+        if(token[i]=='.')
+            token[i]= '\0';
+    }
+    return token;
+}
+
 void printInfo() {
     printf("playfair (encode|decode) <keyfile> <directory> {<afile>} \n");
 }
@@ -29,29 +56,28 @@ int main(int argc, char** argv) {
     misschar* missing_char = keyfile_parsed->missing_character;
     char special_char = keyfile_parsed->special_character;
     grid* grid = create_grid(key,alph);
-    for(int i =4; i<argc; i++) {
-       FILE* tmploaded= changeifileformat(argv[i], missing_char, special_char);
-      if (strcmp(argv[1], "encode") == 0) {
-            char fileNamePrefix[] = "/filecodificato";
-            //gestisco massimo 99 files
-            //6 = 2 per gestire due caratteri numerici , 3 per il .py e 1 per il \0
-            char *charOfAnInt = malloc(6);
-            sprintf(charOfAnInt,"%i",i-3);
-            strcat(charOfAnInt, ".py");
-            char *fileName = malloc(sizeof(char) * ((strlen(fileNamePrefix) + strlen(charOfAnInt))));
-            strcpy(fileName, fileNamePrefix);
-            strcat(fileName, charOfAnInt);
-            char *argv3Copy = malloc(sizeof(char) * (strlen(argv[3]) + strlen(fileName)));
-            strcpy(argv3Copy, argv[3]);
-            strcat(argv3Copy, fileName);
-            encode_file(tmploaded, grid, argv3Copy);
-            free(fileName);
-            free(charOfAnInt);
-            free(argv3Copy);
+    if (strcmp(argv[1], "encode") == 0) {
+      for(int i =4; i<argc; i++) {
+            FILE* tmpFile= toEncodedFormat(argv[i], missing_char, special_char);
+            char* tkn = getFileName(argv[i]);
+            char pathName[strlen(argv[3])+strlen(tkn)+3] ;
+            createPathName(argv[3], tkn, ".pf", pathName);
+            encode_file(tmpFile, grid, pathName);
         }
-   }
+   }  else if (strcmp(argv[1], "decode") == 0) {
+        for(int i =4; i<argc; i++) {
+            FILE* tmpFile = decode_file(grid, argv[i]);
+            char* tkn = getFileName(argv[i]);
+            char pathName[strlen(argv[3])+strlen(tkn)+4];
+            createPathName(argv[3], tkn, ".dec",pathName);
+            toDecodedFormat(tmpFile, pathName, missing_char, special_char);
+        }
+    } else {
+        printf("Inserisci correttamente una tra le parole encode e decode\n");
+        printInfo();
+        return -1;
+    }
 }
-
 
 
 
