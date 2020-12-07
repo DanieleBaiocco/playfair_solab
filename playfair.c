@@ -19,7 +19,6 @@ void makeNextNullandRemoveEndChars(vblock_t* last);
 void finishToInitGrid(grid* grid, cell** alphabet);
 void updateStateIntoAlphabet(cell** alphabet, char c);
 void replacechar(char *s,char c1,char c2);
-FILE* toEncodedFormat(char* filei, misschar* missing_character, char special_character);
 int check(char *s,char c);
 
 FILE* decode_file(grid* grid, char* fileToDecode){
@@ -76,13 +75,18 @@ FILE* decode_file(grid* grid, char* fileToDecode){
     return tmp;
 }
 
-void toDecodedFormat(FILE* tmpFile, char* pathname, misschar* missing_char, char special_char){
+void toDecodedFormat(FILE* tmpFile, char* pathname, char specialchar){
     FILE* output = fopen(pathname,"w");
     char buffer[256];
     while ( fgets(buffer,256,tmpFile)  != NULL ) {
+        for(int i=0; i<strlen(buffer)-1; i=i+2) {
+            char c1 = buffer[i];
+            char c2 = buffer[i + 1];
+            if (c1 == c2) {
+                c2 = c1;
+            }
+        }
         remove_spaces(buffer);
-        if(buffer[strlen(buffer)-1]== special_char)
-            buffer[strlen(buffer)-1] =' ';
         fputs(buffer,output);
     }
     fclose(output);

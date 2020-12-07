@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
         return -1;
     }
     kfcontainer* keyfile_parsed = create_container(argv[2]);
-  key* key = keyfile_parsed->key;
+    key* key = keyfile_parsed->key;
     cell** alph = keyfile_parsed->alphabet;
     misschar* missing_char = keyfile_parsed->missing_character;
     char special_char = keyfile_parsed->special_character;
@@ -70,13 +70,15 @@ int main(int argc, char** argv) {
             char* tkn = getFileName(argv[i]);
             char pathName[strlen(argv[3])+strlen(tkn)+4];
             createPathName(argv[3], tkn, ".dec",pathName);
-            toDecodedFormat(tmpFile, pathName, missing_char, special_char);
+            toDecodedFormat(tmpFile, pathName, special_char);
         }
     } else {
         printf("Inserisci correttamente una tra le parole encode e decode\n");
         printInfo();
         return -1;
     }
+    //posto delle free :)
+
 }
 
 

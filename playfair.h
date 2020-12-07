@@ -51,10 +51,10 @@ typedef struct Container {
     key* key;
 } kfcontainer;
 
-FILE* toEncodedFormat (char* filei, misschar* missing_character, char special_character);
 grid* create_grid (key* key, cell** alph);
 kfcontainer* create_container (char* keyfile);
 void encode_file(FILE * input, grid* grid, char* directory);
 FILE* decode_file(grid* grid, char* fileToDecode);
-void toDecodedFormat(FILE* tmpFile, char* pathname, misschar* missing_char, char special_char);
+void toDecodedFormat(FILE* tmpFile, char* pathname, char special_character);
+FILE* toEncodedFormat (char* filei, misschar* missing_character, char special_character);
 #endif //UNTITLED10_PLAYFAIR_H
