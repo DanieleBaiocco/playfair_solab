@@ -71,12 +71,21 @@ FILE* decode_file(grid* grid, char* fileToDecode){
         putc(' ',tmp);
         }
     }
+    fclose(input);
     rewind(tmp);
     return tmp;
 }
 
 void toDecodedFormat(FILE* tmpFile, char* pathname, misschar* missing_char, char special_char){
-
+    FILE* output = fopen(pathname,"w");
+    char buffer[256];
+    while ( fgets(buffer,256,tmpFile)  != NULL ) {
+        remove_spaces(buffer);
+        if(buffer[strlen(buffer)-1]== special_char)
+            buffer[strlen(buffer)-1] =' ';
+        fputs(buffer,output);
+    }
+    fclose(output);
 }
 
 int check(char *s,char c){
@@ -371,8 +380,6 @@ FILE * toEncodedFormat(char* filei, misschar* missing_character, char special_ch
         }//endwhile
          fclose(fin);
     rewind(tmp);
-    char bufferr[256];
-
     return tmp;
     }
 
