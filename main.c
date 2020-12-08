@@ -10,6 +10,66 @@ void printInfo();
 int check(char *s,char c);
 char* getFileName (char* argvI);
 void createPathName(char* directory, char* firstpart, char* extension, char* pathname);
+void freecontainer(kfcontainer** container);
+void freekey(key* key);
+void freeString(cell** cells, int size);
+void freealphabet(cell** alph);
+void freegrid(grid** grid);
+void freemap(map** map);
+void freematrix(char** matrix);
+void freeblocks(vblock_t *block);
+
+void freeblocks(vblock_t *block){
+   // freeString(block->keyString, block->size);
+    //free(block->keyString);
+   /* if(block->next!=NULL){
+        freeblocks(block->next);
+        free(block->next);*/
+   // }
+}
+
+void freematrix(char** matrix){
+    for(int i=0;i<5;i++){
+            free(matrix[i]);
+    }
+}
+
+void freemap(map** map){
+    for(int i=0; i<25; i++){
+        free(map[i]);
+    }
+}
+
+void freegrid(grid** grid){
+    freemap((*grid)->map);
+    freematrix((*grid)->matrix);
+    free((*grid)->map);
+    free((*grid)->matrix);
+    //free((*grid));
+    *grid =NULL;
+}
+
+void freealphabet(cell** alph){
+    freeString(alph,25);
+}
+
+void freeString(cell** cells, int size){
+     for(int i=0; i<size; i++)
+         free(cells[i]);
+}
+
+void freekey(key* key){
+    freeblocks(key->block);
+    free(key->block);
+}
+
+void freecontainer(kfcontainer** container){
+    free((*container)->key);
+    free((*container)->alphabet);
+    free((*container)->missing_character);
+    free(*container);
+    *container=NULL;
+}
 
 void createPathName(char* directory, char* firstpart, char* extension, char* pathname){
     char firstpartplusext[strlen(firstpart)+strlen(extension)];
@@ -77,8 +137,11 @@ int main(int argc, char** argv) {
         printInfo();
         return -1;
     }
-    //posto delle free :)
-
+    freegrid(&grid);
+    freealphabet(alph);
+    freekey(key);
+    freecontainer(&keyfile_parsed);
+    return -1;
 }
 
 

@@ -237,17 +237,8 @@ cell** createAlphabet (char *bufferforalph){
         createCell(alphabet,bufferforalph[i],i);
     }
     return alphabet;
-    /*map** alphmap = malloc(sizeof(map*)*26);
-    for(int i=0; i<26; i++){
-        for(int j=0; j<25; j++){
-            if(i+65==bufferforalph[j]){
-                createmapi(alphmap,i,bufferforalph[j],j);
-            }
-         }*/
+
     }
-    //vedi come eliminare dinamicamente memoria
-
-
 
 kfcontainer* create_container (char* keyfile){
     int numberOfBlocks = 0;
