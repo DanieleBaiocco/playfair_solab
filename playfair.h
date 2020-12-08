@@ -21,40 +21,39 @@ typedef struct PlayFairGrid {
     map** map;
 } grid;
 
-
-typedef struct MissingCharacter{
-    char missing_character;
-    char replace_character;
-} misschar;
+typedef struct MissingReplaceCharacter{
+    char missingCharacter;
+    char replaceCharacter;
+} missing;
 
 typedef struct Cell {
-    char keycharacter;
+    char keyCharacter;
     bool state;
 } cell;
 
-typedef struct vblock {
+typedef struct KeyBlock {
     cell** keyString;
     int size;
-    struct vblock *next;
-} vblock_t;
+    struct KeyBlock* next;
+} keyblock;
 
 typedef struct KeyUsed {
     int index;
-    vblock_t *block;
-    int numberOfBlocks;
+    keyblock *block;
 } key;
 
 typedef struct Container {
     cell** alphabet;
-    misschar* missing_character;
-    char special_character;
+    missing* missingCharacter;
+    char specialCharacter;
     key* key;
 } kfcontainer;
 
+kfcontainer* create_container (char* keyFile);
 grid* create_grid (key* key, cell** alph);
-kfcontainer* create_container (char* keyfile);
 void encode_file(FILE * input, grid* grid, char* directory);
 FILE* decode_file(grid* grid, char* fileToDecode);
-void toDecodedFormat(FILE* tmpFile, char* pathname, char special_character);
-FILE* toEncodedFormat (char* filei, misschar* missing_character, char special_character);
+FILE* to_encoded_format(char* pathname, missing* missingCharacter, char specialCharacter);
+void to_decoded_format(FILE* tmpFile, char* pathname, char specialCharacter);
+
 #endif //UNTITLED10_PLAYFAIR_H

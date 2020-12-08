@@ -6,20 +6,19 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "deallocate.h"
+#include "utility.h"
 
-misschar* createMissingCharacter (char* string, char replacetothemissing);
+missing* createMissingCharacter (char* string, char replaceCharacter);
 void createMap(char** matrice, map** map);
-void remove_spaces(char* s);
 void shift(grid* grid);
-void addblock(char* buffer, int bufferlength, cell** keyString, vblock_t ** pfirst, vblock_t ** last);
+void addblock(char* buffer, int bufferlength, cell** keyString, keyblock ** pfirst, keyblock ** last);
 void createCell(cell** pCell, char c, int i);
-key *createkey(vblock_t *first, int numberofblocks);
-void changeToFalse(char c, int index, vblock_t* currentBlock);
-void makeNextNullandRemoveEndChars(vblock_t* last);
+key* createkey(keyblock *first);
+void changeToFalse(char c, int index, keyblock* currentBlock);
+void makeNextNullandRemoveEndChars(keyblock* last);
 void finishToInitGrid(grid* grid, cell** alphabet);
 void updateStateIntoAlphabet(cell** alphabet, char c);
-void replacechar(char *s,char c1,char c2);
-int check(char *s,char c);
 
 FILE* decode_file(grid* grid, char* fileToDecode){
     FILE* input = fopen(fileToDecode,"r");
@@ -27,12 +26,10 @@ FILE* decode_file(grid* grid, char* fileToDecode){
     char buffer[256];
     while(fgets(buffer, 256, input) != NULL){
         for(int i=0; i<strlen(buffer); i=i+3){
-        char a = buffer[i];
-        char b = buffer[i+1];
-        int arow = grid->map[a-65]->row;
-        int acolumn = grid ->map[a-65]->collumn;
-        int brow = grid->map[b-65]->row;
-        int bcolumn = grid->map[b-65]->collumn;
+        int arow = grid->map[buffer[i]-65]->row;
+        int acolumn = grid ->map[buffer[i]-65]->collumn;
+        int brow = grid->map[buffer[i+1]-65]->row;
+        int bcolumn = grid->map[buffer[i+1]-65]->collumn;
         char atorespond =' ';
         char btorespond = ' ';
         if(arow == brow){
@@ -75,7 +72,7 @@ FILE* decode_file(grid* grid, char* fileToDecode){
     return tmp;
 }
 
-void toDecodedFormat(FILE* tmpFile, char* pathname, char specialchar){
+void to_decoded_format(FILE* tmpFile, char* pathname, char special_character){
     FILE* output = fopen(pathname,"w");
     char buffer[256];
     while ( fgets(buffer,256,tmpFile)  != NULL ) {
@@ -86,21 +83,12 @@ void toDecodedFormat(FILE* tmpFile, char* pathname, char specialchar){
                 c2 = c1;
             }
         }
-        remove_spaces(buffer);
+        removeSpaces(buffer);
         fputs(buffer,output);
     }
     fclose(output);
 }
 
-int check(char *s,char c){
-    int i,count=0;
-    for(i=0;s[i];i++){
-        if(s[i]==c){
-            count++;
-        }
-    }
-    return count;
-}
 void encode_file(FILE * input, grid* grid, char* directory){
     FILE* outputFile = fopen(directory, "w");
     char buffer[256];
@@ -135,7 +123,6 @@ void encode_file(FILE * input, grid* grid, char* directory){
 }
 
 grid* create_grid (key* key, cell** alph){
-    //init matrice
     char **mat = malloc(5 * sizeof(char *));
     for(int i = 0; i < 5; i++)
         mat[i] = malloc(5 * sizeof(char));
@@ -144,35 +131,32 @@ grid* create_grid (key* key, cell** alph){
     newGrid->rowLastInteger=0;
     newGrid->columnLastInteger=0;
     newGrid->matrix = mat;
-    while (key->block !=NULL && (newGrid->columnLastInteger!=4 || newGrid->rowLastInteger!=5)){
+    keyblock * firstblock = key->block;
+    while (key->block !=NULL && (newGrid->columnLastInteger != 4 || newGrid->rowLastInteger != 5)){
         for(key->index; key->index< key->block->size; key->index++){
-            if(key->block->keyString[key->index]->state == true && key->block->keyString[key->index]->keycharacter!= ' '){
+            if(key->block->keyString[key->index]->state == true && key->block->keyString[key->index]->keyCharacter != ' '){
                 //viene aggiunto nella matrice e viene cambiata la posizione corrente
-                newGrid->matrix[newGrid->rowLastInteger][newGrid->columnLastInteger] =key->block->keyString[key->index]->keycharacter;
+                newGrid->matrix[newGrid->rowLastInteger][newGrid->columnLastInteger] =key->block->keyString[key->index]->keyCharacter;
                 //viene fatta avanzare di uno la posizione corrente
                 char imOnThis = newGrid->matrix[newGrid->rowLastInteger][newGrid->columnLastInteger];
                 shift(newGrid);
                 //vengono messi a false tutti gli altri con quella lettera
                changeToFalse(imOnThis, key->index, key->block);
                //update sull'alfabeto
-               updateStateIntoAlphabet(alph, key->block->keyString[key->index]->keycharacter);
+               updateStateIntoAlphabet(alph, key->block->keyString[key->index]->keyCharacter);
             }
         }
         key->index =0;
         key->block=key->block->next;
     }
-    if(newGrid->rowLastInteger!=4||newGrid->columnLastInteger!=5)
-                finishToInitGrid(newGrid, alph);
-    for(int i=0; i<5;i++){
-        for(int j=0 ; j<5; j++){
-            printf("%c",newGrid->matrix[i][j]);
-        }
-    }
-    printf("\n");
+    if(newGrid->rowLastInteger != 4 || newGrid->columnLastInteger != 5)
+        finishToInitGrid(newGrid, alph);
+    key->block = firstblock;
+    freeKey(key);
+    freeAlphabet(alph);
     createMap(newGrid->matrix,mapOfNewGrid);
     newGrid->map= mapOfNewGrid;
     return newGrid;
-
 }
 
 void createMap(char** matrice, map** mapOfGrid){
@@ -194,7 +178,7 @@ void createMap(char** matrice, map** mapOfGrid){
 void finishToInitGrid(grid* grid, cell** alphabet){
     for(int i=0; i<25; i++){
         if(alphabet[i]->state == true){
-            grid->matrix[grid->rowLastInteger][grid->columnLastInteger] = alphabet[i]->keycharacter;
+            grid->matrix[grid->rowLastInteger][grid->columnLastInteger] = alphabet[i]->keyCharacter;
             shift(grid);
         }
     }
@@ -202,17 +186,16 @@ void finishToInitGrid(grid* grid, cell** alphabet){
 
 void updateStateIntoAlphabet(cell** alphabet, char c){
     for(int i=0; i<25;i++){
-        if(alphabet[i]->keycharacter == c && alphabet[i]->state == true){
+        if(alphabet[i]->keyCharacter == c && alphabet[i]->state == true){
             alphabet[i]->state = false;
             i=24;
         }
     }
 }
-void changeToFalse(char c, int index, vblock_t* currentBlock){
+void changeToFalse(char c, int index, keyblock* currentBlock){
     while (currentBlock!= NULL){
-
         for(index; index < currentBlock->size; index++){
-            if(currentBlock->keyString[index]->keycharacter == c){
+            if(currentBlock->keyString[index]->keyCharacter == c){
                 currentBlock->keyString[index]->state = false;
             }
         }
@@ -222,7 +205,7 @@ void changeToFalse(char c, int index, vblock_t* currentBlock){
 }
 
 void shift(grid* grid){
-    if(grid->columnLastInteger==4){
+    if(grid->columnLastInteger == 4){
         grid->rowLastInteger++;
         grid->columnLastInteger=0;
     } else
@@ -250,14 +233,14 @@ kfcontainer* create_container (char* keyfile){
    fgets(bufferformissingcharacter,7,kfile);
    char bff[25];
     for(int i =0; i<25; i++){
-        strncat(bff, &alphab[i]->keycharacter, 1);
+        strncat(bff, &alphab[i]->keyCharacter, 1);
     }
-  misschar* missingchar = createMissingCharacter(bff, bufferformissingcharacter[0]);
+    missing* missingchar = createMissingCharacter(bff, bufferformissingcharacter[0]);
     char bufferforspecialcharacter[7];
     fgets(bufferforspecialcharacter,7,kfile);
     char specialchar = bufferforspecialcharacter[0];
-    vblock_t *first = NULL;
-    vblock_t *last = NULL;
+    keyblock *first = NULL;
+    keyblock *last = NULL;
     char bufferforkey[128];
     while(fgets(bufferforkey,128,kfile)!= NULL){
         int bufflen = strlen(bufferforkey);
@@ -269,47 +252,47 @@ kfcontainer* create_container (char* keyfile){
     }
     makeNextNullandRemoveEndChars(last);
     fclose(kfile);
-    key* totalkey = createkey(first, numberOfBlocks);
+    key* totalkey = createkey(first);
    kfcontainer* kfcontainertoReturn = malloc(sizeof(kfcontainer));
    kfcontainertoReturn->alphabet = alphab;
-   kfcontainertoReturn->missing_character = missingchar;
-   kfcontainertoReturn->special_character = specialchar;
+   kfcontainertoReturn->missingCharacter = missingchar;
+   kfcontainertoReturn->specialCharacter = specialchar;
    kfcontainertoReturn->key= totalkey;
    return kfcontainertoReturn;
 
 }
 
-misschar* createMissingCharacter (char* string, char replacetothemissing){
-    misschar* toReturn = malloc(sizeof (misschar));
+missing* createMissingCharacter (char* string, char replaceCharacter){
+    missing* toReturn = malloc(sizeof (missing));
     char missingcharacter;
     for(int i=0; i<26; i++){
         char cc = i+65;
             if(strchr(string, cc)==NULL)
                 missingcharacter= cc;
     }
-    toReturn->missing_character = missingcharacter;
-    toReturn->replace_character = replacetothemissing;
+    toReturn->missingCharacter = missingcharacter;
+    toReturn->replaceCharacter = replaceCharacter;
     return toReturn;
 }
 
-key* createkey(vblock_t *first, int numberofblocks) {
+key* createkey(keyblock *first) {
     key* keytoreturn = malloc(sizeof(key));
     keytoreturn->index=0;
     keytoreturn->block=first;
-    keytoreturn->numberOfBlocks = numberofblocks;
     return keytoreturn;
 
 }
 
-void makeNextNullandRemoveEndChars(vblock_t* last){
+void makeNextNullandRemoveEndChars(keyblock* last){
     int startRemovingInt = last->size-5;
     for(startRemovingInt;startRemovingInt<last->size;startRemovingInt++){
-        last->keyString[startRemovingInt]->keycharacter = ' ';
+        last->keyString[startRemovingInt]->keyCharacter = ' ';
     }
     last->next = NULL;
 }
-void addblock(char* buffer, int bufferlength, cell** keyStr, vblock_t ** pfirst, vblock_t ** plast ) {
-    vblock_t* new_block = malloc(sizeof(vblock_t));
+
+void addblock(char* buffer, int bufferlength, cell** keyStr, keyblock ** pfirst, keyblock ** plast ) {
+    keyblock* new_block = malloc(sizeof(keyblock));
     for(int i=0; i<bufferlength;i++){
         createCell(keyStr,buffer[i],i);
     }
@@ -326,7 +309,7 @@ void addblock(char* buffer, int bufferlength, cell** keyStr, vblock_t ** pfirst,
 
 void createCell(cell **pCell, char c, int i) {
     pCell[i]=malloc(sizeof(cell));
-    pCell[i]->keycharacter = c;
+    pCell[i]->keyCharacter = c;
     pCell[i]->state = true;
 }
 
@@ -337,13 +320,13 @@ void createCell(cell **pCell, char c, int i) {
  * missing_character. Inoltre per ogni coppia devo controllare se i due caratteri sono uguali. In caso
  * affermativo rimpiazzo il primo/secondo carattere col carattere special_character.
  */
-FILE * toEncodedFormat(char* filei, misschar* missing_character, char special_character){
-    FILE* fin = fopen(filei,"r");
+FILE * to_encoded_format(char* pathname, missing* missing_character, char special_character){
+    FILE* fin = fopen(pathname, "r");
     FILE* tmp = tmpfile();
     char buffer[256];
     while ( fgets(buffer,256,fin)  != NULL ) {
-        remove_spaces(buffer);
-        replacechar(buffer, missing_character->missing_character, missing_character->replace_character);
+        removeSpaces(buffer);
+        replaceChar(buffer, missing_character->missingCharacter, missing_character->replaceCharacter);
         if(strlen(buffer)%2==0){
         for(int i=0; i<strlen(buffer)-2;i=i+2){
             char c1 = buffer[i];
@@ -380,19 +363,4 @@ FILE * toEncodedFormat(char* filei, misschar* missing_character, char special_ch
 
 
 
-void remove_spaces(char* s) {
-    const char* d = s;
-    do {
-        while (*d == ' ') {
-            ++d;
-        }
-    } while ((*s++ = *d++));
-}
 
-void replacechar(char *s,char c1,char c2){
-    for(int i=0;s[i];i++){
-        if(s[i]==c1){
-            s[i]=c2;
-        }
-    }
-}
