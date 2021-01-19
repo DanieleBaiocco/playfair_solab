@@ -10,5 +10,5 @@ void freeAlphabet(cell** alph);
 void freeKey(key* key);
 void freeContainer(kfcontainer** container);
 void freeGrid(grid** grid);
-
+void freePointersToGridAndContainer(kfcontainer** pointerToContainer, grid** pointerToGrid);
 #endif //PLAYFAIR_DEALLOCATE_H

@@ -54,6 +54,6 @@ grid* create_grid (key* key, cell** alph);
 void encode_file(FILE * input, grid* grid, char* directory);
 FILE* decode_file(grid* grid, char* fileToDecode);
 FILE* to_encoded_format(char* pathname, missing* missingCharacter, char specialCharacter);
-void to_decoded_format(FILE* tmpFile, char* pathname, char specialCharacter);
+void to_decoded_format(FILE *tmpFile, char *pathname);
 
 #endif //UNTITLED10_PLAYFAIR_H

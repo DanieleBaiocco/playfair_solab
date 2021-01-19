@@ -37,27 +37,36 @@ void freeString(cell** cells, int size){
 void freeGrid(grid** grid){
     freemap((*grid)->map);
     freematrix((*grid)->matrix);
-    free((*grid)->map);
-    free((*grid)->matrix);
-    //free((*grid));
-    *grid =NULL;
+    (*grid)->map = NULL;
+    (*grid)->matrix = NULL;
+    //free(*grid);
+    (*grid)=NULL;
 }
 
 void freemap(map** map){
     for(int i=0; i<25; i++){
         free(map[i]);
+        map[i]= NULL;
     }
+    free(map);
 }
 
 void freematrix(char** matrix){
     for(int i=0;i<5;i++){
         free(matrix[i]);
+        matrix[i] = NULL;
     }
+    free(matrix);
 }
 
 void freeContainer(kfcontainer** container){
     free((*container)->missingCharacter);
     free(*container);
     *container=NULL;
+}
+
+void freePointersToGridAndContainer(kfcontainer** pointerToContainer, grid** pointerToGrid){
+    freeContainer(pointerToContainer);
+    freeGrid(pointerToGrid);
 }
 
