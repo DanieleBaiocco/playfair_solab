@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/daniele/CLionProjects/playfair_solab/deallocate.h
+playfair.h
+/home/daniele/CLionProjects/playfair_solab/playfair.h
+
+/home/daniele/CLionProjects/playfair_solab/playfair.c
+playfair.h
+/home/daniele/CLionProjects/playfair_solab/playfair.h
+stdio.h
+-
+string.h
+-
+stdlib.h
+-
+stdbool.h
+-
+deallocate.h
+/home/daniele/CLionProjects/playfair_solab/deallocate.h
+utility.h
+/home/daniele/CLionProjects/playfair_solab/utility.h
+
+/home/daniele/CLionProjects/playfair_solab/playfair.h
+stdio.h
+-
+stdbool.h
+-
+
+/home/daniele/CLionProjects/playfair_solab/utility.h
+stdbool.h
+-
+

@@ -1,0 +1,3 @@
+/home/daniele/CLionProjects/playfair_solab/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/daniele/CLionProjects/playfair_solab/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/daniele/CLionProjects/playfair_solab/cmake-build-debug/CMakeFiles/playfair.dir

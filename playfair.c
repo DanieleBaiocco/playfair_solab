@@ -96,15 +96,13 @@ void applyDecodeRule(char* atorespond, char* btorespond, int arow, int brow, int
 }
 
 
-void to_decoded_format(FILE *tmpFile, char *pathname) {
+void to_decoded_format(FILE *tmpFile, char *pathname, char specialchar) {
     FILE* output = fopen(pathname,"w");
     char buffer[256];
     while ( fgets(buffer,256,tmpFile)  != NULL ) {
         for(int i=0; i<strlen(buffer)-1; i=i+2) {
-            char c1 = buffer[i];
-            char c2 = buffer[i + 1];
-            if (c1 == c2) {
-                c2 = c1;
+            if (buffer[i + 1]== specialchar) {
+               buffer[i+1]= buffer[i];
             }
         }
         removeSpaces(buffer);
@@ -249,15 +247,6 @@ void shift(grid* grid){
     } else
         grid->columnLastInteger++;
 }
-
-cell** createAlphabet (char *bufferforalph){
-    cell** alphabet = malloc(sizeof(cell*)*25);
-    for(int i=0; i<25;i++){
-        createCell(alphabet,bufferforalph[i],i);
-    }
-    return alphabet;
-
-    }
 
 kfcontainer* create_container (char* keyfile){
     FILE* kfile = fopen(keyfile,"r");

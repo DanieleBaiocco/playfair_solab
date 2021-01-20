@@ -20,7 +20,7 @@ void decodeSession(kfcontainer* keyFile, char** argv, int i, grid* grid){
     char* filename = getFileName(argv[i]);
     char pathname[strlen(argv[3]) + strlen(filename) + 4];
     createPathName(argv[3], filename, ".dec", pathname);
-    to_decoded_format(tmpFile, pathname);
+    to_decoded_format(tmpFile, pathname, keyFile->specialCharacter);
 }
 
 int main(int argc, char** argv) {

@@ -45,7 +45,7 @@ void freeGrid(grid** grid){
 
 void freemap(map** map){
     for(int i=0; i<25; i++){
-        free(map[i]);
+      //  free(map[i]);
         map[i]= NULL;
     }
     free(map);

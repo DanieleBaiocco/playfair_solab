@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/playfair.dir/main.c.o CMakeFiles/playfair.dir/playfair.c.o CMakeFiles/playfair.dir/deallocate.c.o CMakeFiles/playfair.dir/utility.c.o  -o playfair 
